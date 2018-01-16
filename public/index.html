@@ -26,8 +26,12 @@
         </div>
     </div>
     <script id="post-template" type="text/x-handlebars-template">
-        <div class="post" data-id="{{ _id }}"> {{text}} <a class="toggle-comments" href="#"> Comments </a>
-            <button type="button" class="btn btn-danger remove-post">Remove Post</button>
+        <div class="post" data-id="{{ _id }}"> <span class="post-text edit-post-toggle">{{text}}</span> <input class="form-control edit-post-input edit-post-toggle" style="display: none" type="text"/>
+            <br><a class="toggle-comments" href="#"> Comments </a>
+            <button type="button" class="btn btn-sm btn-primary save-post edit-post-toggle" style="display: none">Save</button>
+            <button type="button" class="btn btn-sm btn-danger cancel-edit-post edit-post-toggle" style="display: none">Cancel Edit</button>
+            <button type="button" class="btn btn-sm btn-primary edit-post edit-post-toggle">Edit</button>
+            <button type="button" class="btn btn-danger remove-post edit-post-toggle">Remove Post</button>
             <div class="comments-container" style="display: none">
                 <ul class="comments-list"></ul>
                 <input class="form-control name" type="text" placeholder="Name" />

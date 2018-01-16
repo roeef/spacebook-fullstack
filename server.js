@@ -87,3 +87,15 @@ app.put('/posts/:postId/comments/:commentId', function (req,res){
         }
     );
 });
+
+
+// Edit Post
+
+app.put('/posts/:postId', function (req,res){
+    Post.update({ '_id':req.params.postId},{ $set: req.body},
+        function (error, affectedObjNum) {
+            console.log(error, affectedObjNum);
+            res.send(affectedObjNum);
+        }
+    );
+});
