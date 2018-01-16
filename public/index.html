@@ -28,8 +28,7 @@
     <script id="post-template" type="text/x-handlebars-template">
         <div class="post" data-id="{{ _id }}"> {{text}} <a class="toggle-comments" href="#"> Comments </a>
             <button type="button" class="btn btn-danger remove-post">Remove Post</button>
-            <div>A Post</div>
-            <div class="comments-container">
+            <div class="comments-container" style="display: none">
                 <ul class="comments-list"></ul>
                 <input class="form-control name" type="text" placeholder="Name" />
                 <input class="form-control comment" type="text" placeholder="Comment" />
@@ -38,8 +37,14 @@
         </div>
     </script>
     <script id="comment-template" type="text/x-handlebars-template">
-        <li class="comment">{{text}} - {{user}}
-            <button type="button" class="btn btn-sm btn-danger remove-comment">Remove Comment</button>
+        <li class="comment form-inline form-group">
+            <b><span class="comment-user">{{user}}</span></b>
+            <input class="form-control edit-comment-input edit-toggle" style="display: none" type="text"/>
+            <span class="comment-text edit-toggle">{{text}}</span><br>
+            <button type="button" class="btn btn-sm btn-primary save-comment edit-toggle" style="display: none">Save</button>
+            <button type="button" class="btn btn-sm btn-danger cancel-edit-comment edit-toggle" style="display: none">Cancel Edit</button>
+            <button type="button" class="btn btn-sm btn-primary edit-comment edit-toggle">Edit</button>
+            <button type="button" class="btn btn-sm btn-danger remove-comment edit-toggle">Remove</button>
         </li>
     </script>
     <script src="jquery/dist/jquery.js"></script>

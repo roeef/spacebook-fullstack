@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient:true}, function() {
-  console.log("DB connection established!!!");
+    console.log("DB connection established!!!");
 })
 
 var Post = require('./models/postModel');
@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.listen(8000, function() {
-  console.log("what do you want from me! get me on 8000 ;-)");
+    console.log("what do you want from me! get me on 8000 ;-)");
 });
 
 // You will need to create 5 server routes
@@ -37,18 +37,18 @@ app.get('/posts', function (req,res){
 
 // 2) to handle adding a post
 app.post('/posts', function (req,res){
-  console.log("app.post");
+    console.log("app.post");
     let post = new Post(req.body);
     post.save();
-  res.send(post);
+    res.send(post);
 });
 
 // 3) to handle deleting a post
 
 app.delete('/posts/:id', function (req,res){
-  Post.findByIdAndRemove(req.params.id, function (error,post) {
-    res.send(post);
-  });
+    Post.findByIdAndRemove(req.params.id, function (error,post) {
+        res.send(post);
+    });
 });
 
 // 4) to handle adding a comment to a post
@@ -71,7 +71,19 @@ app.post('/posts/:id/comments', function (req,res){
 
 app.delete('/posts/:postId/comments/:commentId', function (req,res) {
     Post.findByIdAndUpdate(req.params.postId,{$pull: { comments:{_id: req.params.commentId}}}, function (error, post) {
-            console.log(error, post);
-            res.send(post);
+        console.log(error, post);
+        res.send(post);
     });
+});
+
+
+// Edit comment
+
+app.put('/posts/:postId/comments/:commentId', function (req,res){
+    Post.update({ '_id':req.params.postId, 'comments._id': req.params.commentId },{ $set: {'comments.$': req.body}},
+        function (error, affectedObjNum) {
+            console.log(error, affectedObjNum);
+            res.send(affectedObjNum);
+        }
+    );
 });

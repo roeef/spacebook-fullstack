@@ -1,6 +1,7 @@
 var SpacebookApp = function() {
 
     var posts = [];
+    var visiblePostsIdx = [];
 
 
     getPostsAndRender();
@@ -10,8 +11,8 @@ var SpacebookApp = function() {
             method: "GET",
             url: "/posts",
             success: function (data) {
-              console.log("getPostsAndRender - success");
-              posts = data;
+                console.log("getPostsAndRender - success");
+                posts = data;
                 _renderPosts();
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -108,10 +109,28 @@ var SpacebookApp = function() {
         });
     };
 
+    var editComment = function (postIndex, commentIndex, newValue, onSuccessCallBack){
+        var currentComment = posts[postIndex].comments[commentIndex];
+        currentComment.text = newValue;
+
+        $.ajax({
+            method: "PUT",
+            url: `/posts/${posts[postIndex]._id}/comments/${posts[postIndex].comments[commentIndex]._id}`,
+            data:currentComment ,
+            success: function (data) {
+                onSuccessCallBack();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+        });
+
+    };
     return {
         addPost: addPost,
         removePost: removePost,
         addComment: addComment,
+        editComment: editComment,
         deleteComment: deleteComment,
     };
 };
@@ -138,7 +157,7 @@ $posts.on('click', '.remove-post', function() {
 
 $posts.on('click', '.toggle-comments', function() {
     var $clickedPost = $(this).closest('.post');
-    $clickedPost.find('.comments-container').toggleClass('show');
+    $clickedPost.find('.comments-container').toggle("slow");
 });
 
 $posts.on('click', '.add-comment', function() {
@@ -168,3 +187,36 @@ $posts.on('click', '.remove-comment', function() {
 
     app.deleteComment(postIndex, commentIndex);
 });
+
+$posts.on('click', '.edit-comment', function() {
+    // var $commentsList = $(this).closest('.post').find('.comments-list');
+
+    // Hide Edit&Comment, Show Input&Save
+    let $edit_comment_input = $(this).siblings(".edit-comment-input");
+    let $comment_text = $(this).siblings(".comment-text");
+    $edit_comment_input.val($comment_text.text());
+
+    $(this).closest('.comment').find('.edit-toggle').toggle("slow");
+});
+
+$posts.on('click', '.cancel-edit-comment', function() {
+    $(this).closest('.comment').find('.edit-toggle').toggle("slow");
+});
+
+$posts.on('click', '.save-comment', function() {
+    var postIndex = $(this).closest('.post').index();
+    var commentIndex = $(this).closest('.comment').index();
+
+    let text = $(this).siblings(".edit-comment-input").val();
+    if (text) {
+        let commentText = $(this).siblings(".comment-text");
+        let toggleItems = $(this).closest('.comment').find('.edit-toggle');
+        app.editComment(postIndex, commentIndex, text, function() {
+            commentText.text(text);
+            toggleItems.toggle("slow");
+        });
+    } else {
+        // TODO PUT Validation error and message for the user
+    }
+});
+
