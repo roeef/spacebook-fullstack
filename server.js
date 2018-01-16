@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/spacebookDB', function() {
+mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient:true}, function() {
   console.log("DB connection established!!!");
 })
 
@@ -47,11 +47,31 @@ app.post('/posts', function (req,res){
 
 app.delete('/posts/:id', function (req,res){
   Post.findByIdAndRemove(req.params.id, function (error,post) {
-    res.send("");
+    res.send(post);
   });
 });
 
 // 4) to handle adding a comment to a post
+app.post('/posts/:id/comments', function (req,res){
+    Post.findById(req.params.id, function (error,post) {
+        if (!post.comments) {
+            posts.comments = [];
+        }
+        // NOTE!: for mongoose to support this way of push you need to {usePushEach: true} to the schema defenition
+        post.comments.push(req.body);
+        post.save(function(err, product, number) {
+            res.send(post);
+        });
+    });
+});
+
+
+
 // 5) to handle deleting a comment from a post
 
-
+app.delete('/posts/:postId/comments/:commentId', function (req,res) {
+    Post.findByIdAndUpdate(req.params.postId,{$pull: { comments:{_id: req.params.commentId}}}, function (error, post) {
+            console.log(error, post);
+            res.send(post);
+    });
+});

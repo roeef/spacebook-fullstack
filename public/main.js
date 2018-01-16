@@ -76,19 +76,36 @@ var SpacebookApp = function() {
                 console.log(textStatus);
             }
         });
-
-        _renderPosts();
     };
 
     var addComment = function(newComment, postIndex) {
-        posts[postIndex].comments.push(newComment);
-        _renderComments(postIndex);
+        $.ajax({
+            method: "POST",
+            url: `/posts/${posts[postIndex]._id}/comments`,
+            data: newComment,
+            success: function (returnedPostWithDBId) {
+                posts[postIndex] = returnedPostWithDBId;
+                _renderComments(postIndex);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+        });
     };
 
 
     var deleteComment = function(postIndex, commentIndex) {
-        posts[postIndex].comments.splice(commentIndex, 1);
-        _renderComments(postIndex);
+        $.ajax({
+            method: "DELETE",
+            url: `/posts/${posts[postIndex]._id}/comments/${posts[postIndex].comments[commentIndex]._id}`,
+            success: function (data) {
+                posts[postIndex].comments.splice(commentIndex, 1);
+                _renderComments(postIndex);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+            }
+        });
     };
 
     return {
