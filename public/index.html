@@ -26,9 +26,9 @@
         </div>
     </div>
     <script id="post-template" type="text/x-handlebars-template">
-        <div class="post"> {{text}} <a class="toggle-comments" href="#"> Comments </a>
+        <div class="post" data-id="{{ _id }}"> {{text}} <a class="toggle-comments" href="#"> Comments </a>
             <button type="button" class="btn btn-danger remove-post">Remove Post</button>
-            <div>111</div>
+            <div>A Post</div>
             <div class="comments-container">
                 <ul class="comments-list"></ul>
                 <input class="form-control name" type="text" placeholder="Name" />

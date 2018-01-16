@@ -12,18 +12,46 @@ var app = express();
 app.use(express.static('public'));
 app.use(express.static('node_modules'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
-// You will need to create 5 server routes
-// These will define your API:
 
-// 1) to handle getting all posts and their comments
-// 2) to handle adding a post
-// 3) to handle deleting a post
-// 4) to handle adding a comment to a post
-// 5) to handle deleting a comment from a post
+
 
 app.listen(8000, function() {
   console.log("what do you want from me! get me on 8000 ;-)");
 });
+
+// You will need to create 5 server routes
+// These will define your API:
+// 1) to handle getting all posts and their comments
+app.get('/posts', function (req,res){
+    Post.find(function (err, posts) {
+        if (err) {
+            res.err = err;
+            res.send(err);
+        }
+        res.send(posts);
+    })
+});
+
+// 2) to handle adding a post
+app.post('/posts', function (req,res){
+  console.log("app.post");
+    let post = new Post(req.body);
+    post.save();
+  res.send(post);
+});
+
+// 3) to handle deleting a post
+
+app.delete('/posts/:id', function (req,res){
+  Post.findByIdAndRemove(req.params.id, function (error,post) {
+    res.send("");
+  });
+});
+
+// 4) to handle adding a comment to a post
+// 5) to handle deleting a comment from a post
+
+
