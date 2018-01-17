@@ -1,7 +1,7 @@
-var SpacebookApp = function() {
+let SpacebookApp = function() {
 
-    var posts = [];
-    var visiblePostsIdx = [];
+    let posts = [];
+    let visibleCommentsPostsIdx = [];
 
 
     getPostsAndRender();
@@ -21,16 +21,16 @@ var SpacebookApp = function() {
         });
     }
 
-    var $posts = $(".posts");
+    let $posts = $(".posts");
 
     _renderPosts();
 
     function _renderPosts() {
         $posts.empty();
-        var source = $('#post-template').html();
-        var template = Handlebars.compile(source);
-        for (var i = 0; i < posts.length; i++) {
-            var newHTML = template(posts[i]);
+        let source = $('#post-template').html();
+        let template = Handlebars.compile(source);
+        for (let i = 0; i < posts.length; i++) {
+            let newHTML = template(posts[i]);
             console.log("_renderPosts()",newHTML);
             $posts.append(newHTML);
             _renderComments(i)
@@ -54,18 +54,18 @@ var SpacebookApp = function() {
 
 
     function _renderComments(postIndex) {
-        var post = $(".post")[postIndex];
-        $commentsList = $(post).find('.comments-list')
+        let post = $(".post")[postIndex];
+        let $commentsList = $(post).find('.comments-list');
         $commentsList.empty();
-        var source = $('#comment-template').html();
-        var template = Handlebars.compile(source);
-        for (var i = 0; i < posts[postIndex].comments.length; i++) {
-            var newHTML = template(posts[postIndex].comments[i]);
+        let source = $('#comment-template').html();
+        let template = Handlebars.compile(source);
+        for (let i = 0; i < posts[postIndex].comments.length; i++) {
+            let newHTML = template(posts[postIndex].comments[i]);
             $commentsList.append(newHTML);
         }
     }
 
-    var removePost = function(index) {
+    let removePost = function(index) {
         $.ajax({
             method: "DELETE",
             url: `/posts/${posts[index]._id}`,
@@ -79,7 +79,7 @@ var SpacebookApp = function() {
         });
     };
 
-    var addComment = function(newComment, postIndex) {
+    let addComment = function(newComment, postIndex) {
         $.ajax({
             method: "POST",
             url: `/posts/${posts[postIndex]._id}/comments`,
@@ -95,7 +95,7 @@ var SpacebookApp = function() {
     };
 
 
-    var deleteComment = function(postIndex, commentIndex) {
+    let deleteComment = function(postIndex, commentIndex) {
         $.ajax({
             method: "DELETE",
             url: `/posts/${posts[postIndex]._id}/comments/${posts[postIndex].comments[commentIndex]._id}`,
@@ -109,8 +109,8 @@ var SpacebookApp = function() {
         });
     };
 
-    var editComment = function (postIndex, commentIndex, newValue, onSuccessCallBack){
-        var currentComment = posts[postIndex].comments[commentIndex];
+    let editComment = function (postIndex, commentIndex, newValue, onSuccessCallBack){
+        let currentComment = posts[postIndex].comments[commentIndex];
         currentComment.text = newValue;
 
         $.ajax({
@@ -127,8 +127,8 @@ var SpacebookApp = function() {
 
     };
 
-    var editPost = function (postIndex, newValue, onSuccessCallBack){
-        var currentPost = posts[postIndex];
+    let editPost = function (postIndex, newValue, onSuccessCallBack){
+        let currentPost = posts[postIndex];
         currentPost.text = newValue;
 
         $.ajax({
@@ -155,11 +155,11 @@ var SpacebookApp = function() {
     };
 };
 
-var app = SpacebookApp();
+let app = SpacebookApp();
 
 
 $('#addpost').on('click', function() {
-    var $input = $("#postText");
+    let $input = $("#postText");
     if ($input.val() === "") {
         alert("Please enter text!");
     } else {
@@ -168,30 +168,30 @@ $('#addpost').on('click', function() {
     }
 });
 
-var $posts = $(".posts");
+let $posts = $(".posts");
 
 $posts.on('click', '.remove-post', function() {
-    var index = $(this).closest('.post').index();;
+    let index = $(this).closest('.post').index();
     app.removePost(index);
 });
 
 $posts.on('click', '.toggle-comments', function() {
-    var $clickedPost = $(this).closest('.post');
+    let $clickedPost = $(this).closest('.post');
     $clickedPost.find('.comments-container').toggle("slow");
 });
 
 $posts.on('click', '.add-comment', function() {
 
-    var $comment = $(this).siblings('.comment');
-    var $user = $(this).siblings('.name');
+    let $comment = $(this).siblings('.comment');
+    let $user = $(this).siblings('.name');
 
     if ($comment.val() === "" || $user.val() === "") {
         alert("Please enter your name and a comment!");
         return;
     }
 
-    var postIndex = $(this).closest('.post').index();
-    var newComment = { text: $comment.val(), user: $user.val() };
+    let postIndex = $(this).closest('.post').index();
+    let newComment = { text: $comment.val(), user: $user.val() };
 
     app.addComment(newComment, postIndex);
 
@@ -201,9 +201,8 @@ $posts.on('click', '.add-comment', function() {
 });
 
 $posts.on('click', '.remove-comment', function() {
-    var $commentsList = $(this).closest('.post').find('.comments-list');
-    var postIndex = $(this).closest('.post').index();
-    var commentIndex = $(this).closest('.comment').index();
+    let postIndex = $(this).closest('.post').index();
+    let commentIndex = $(this).closest('.comment').index();
 
     app.deleteComment(postIndex, commentIndex);
 });
@@ -218,7 +217,7 @@ $posts.on('click', '.edit-post', function() {
 });
 
 $posts.on('click', '.edit-comment', function() {
-    // var $commentsList = $(this).closest('.post').find('.comments-list');
+    // let $commentsList = $(this).closest('.post').find('.comments-list');
 
     // Hide Edit&Comment, Show Input&Save
     let $edit_comment_input = $(this).siblings(".edit-post-input");
@@ -237,8 +236,8 @@ $posts.on('click', '.cancel-edit-post', function() {
 });
 
 $posts.on('click', '.save-comment', function() {
-    var postIndex = $(this).closest('.post').index();
-    var commentIndex = $(this).closest('.comment').index();
+    let postIndex = $(this).closest('.post').index();
+    let commentIndex = $(this).closest('.comment').index();
 
     let text = $(this).siblings(".edit-comment-input").val();
     if (text) {
@@ -254,7 +253,7 @@ $posts.on('click', '.save-comment', function() {
 });
 
 $posts.on('click', '.save-post', function() {
-    var postIndex = $(this).closest('.post').index();
+    let postIndex = $(this).closest('.post').index();
 
     let text = $(this).siblings(".edit-post-input").val();
     if (text) {

@@ -1,14 +1,14 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+let express = require('express');
+let bodyParser = require('body-parser');
+let mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient:true}, function() {
     console.log("DB connection established!!!");
-})
+});
 
-var Post = require('./models/postModel');
+let Post = require('./models/postModel');
 
-var app = express();
+let app = express();
 app.use(express.static('public'));
 app.use(express.static('node_modules'));
 app.use(bodyParser.json());
