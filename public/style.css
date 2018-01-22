@@ -9,3 +9,8 @@
 .btn-danger {
     margin: 5px 0 5px 10px;
 }
+
+.height-keeper {
+    display: inline-block;
+    min-height: 35px;
+}

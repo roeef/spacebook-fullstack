@@ -2,7 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient:true}, function() {
+mongoose.connect(process.env.CONNECTION_STRING||'mongodb://localhost/spacebookDB',{useMongoClient:true}, function() {
     console.log("DB connection established!!!");
 });
 
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-app.listen(8000, function() {
+app.listen(process.env.PORT || '8080', function() {
     console.log("what do you want from me! get me on 8000 ;-)");
 });
 
@@ -78,11 +78,9 @@ app.delete('/posts/:postId/comments/:commentId', function (req,res) {
 
 
 // Edit comment
-
 app.put('/posts/:postId/comments/:commentId', function (req,res){
     Post.update({ '_id':req.params.postId, 'comments._id': req.params.commentId },{ $set: {'comments.$': req.body}},
         function (error, affectedObjNum) {
-            console.log(error, affectedObjNum);
             res.send(affectedObjNum);
         }
     );
@@ -90,11 +88,9 @@ app.put('/posts/:postId/comments/:commentId', function (req,res){
 
 
 // Edit Post
-
 app.put('/posts/:postId', function (req,res){
     Post.update({ '_id':req.params.postId},{ $set: req.body},
         function (error, affectedObjNum) {
-            console.log(error, affectedObjNum);
             res.send(affectedObjNum);
         }
     );

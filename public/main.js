@@ -1,7 +1,8 @@
 let SpacebookApp = function() {
 
     let posts = [];
-    let visibleCommentsPostsIdx = [];
+    var visibleCommentsViewByPostsIdxFromLocalStorage = JSON.parse(localStorage.getItem("visibleCommentsViewByPostsIdx"));
+    let visibleCommentsViewByPostsIdx = visibleCommentsViewByPostsIdxFromLocalStorage ? visibleCommentsViewByPostsIdxFromLocalStorage : [];
 
 
     getPostsAndRender();
@@ -32,6 +33,12 @@ let SpacebookApp = function() {
         for (let i = 0; i < posts.length; i++) {
             let newHTML = template(posts[i]);
             console.log("_renderPosts()",newHTML);
+            if (visibleCommentsViewByPostsIdx[i]) {
+                console.log("Hi");
+                let $newPost = $(newHTML);
+                $newPost.find(".comments-container").toggle();
+                newHTML = $newPost;
+            }
             $posts.append(newHTML);
             _renderComments(i)
         }
@@ -144,7 +151,12 @@ let SpacebookApp = function() {
         });
 
     };
-    
+
+    var togglePostCommentViewStatus = function (postIndex) {
+        visibleCommentsViewByPostsIdx[postIndex] = 1 - (visibleCommentsViewByPostsIdx[postIndex]|0);
+        localStorage.setItem("visibleCommentsViewByPostsIdx", JSON.stringify(visibleCommentsViewByPostsIdx));
+    };
+
     return {
         addPost: addPost,
         editPost: editPost,
@@ -152,6 +164,7 @@ let SpacebookApp = function() {
         addComment: addComment,
         editComment: editComment,
         deleteComment: deleteComment,
+        togglePostCommentViewStatus: togglePostCommentViewStatus,
     };
 };
 
@@ -177,7 +190,10 @@ $posts.on('click', '.remove-post', function() {
 
 $posts.on('click', '.toggle-comments', function() {
     let $clickedPost = $(this).closest('.post');
-    $clickedPost.find('.comments-container').toggle("slow");
+    $clickedPost.find('.comments-container').toggle("fast");
+    let index = $(this).closest('.post').index();
+
+    app.togglePostCommentViewStatus(index);
 });
 
 $posts.on('click', '.add-comment', function() {
@@ -213,7 +229,7 @@ $posts.on('click', '.edit-post', function() {
     let $post_text = $(this).siblings(".post-text");
     $edit_post_input.val($post_text.text());
 
-    $(this).closest('.post').find('.edit-post-toggle').toggle("slow");
+    $(this).closest('.post').find('.edit-post-toggle').toggle("fast");
 });
 
 $posts.on('click', '.edit-comment', function() {
@@ -224,15 +240,15 @@ $posts.on('click', '.edit-comment', function() {
     let $comment_text = $(this).siblings(".comment-text");
     $edit_comment_input.val($comment_text.text());
 
-    $(this).closest('.comment').find('.edit-toggle').toggle("slow");
+    $(this).closest('.comment').find('.edit-toggle').toggle("fast");
 });
 
 $posts.on('click', '.cancel-edit-comment', function() {
-    $(this).closest('.comment').find('.edit-toggle').toggle("slow");
+    $(this).closest('.comment').find('.edit-toggle').toggle("fast");
 });
 
 $posts.on('click', '.cancel-edit-post', function() {
-    $(this).closest('.post').find('.edit-post-toggle').toggle("slow");
+    $(this).closest('.post').find('.edit-post-toggle').toggle("fast");
 });
 
 $posts.on('click', '.save-comment', function() {
@@ -245,7 +261,7 @@ $posts.on('click', '.save-comment', function() {
         let toggleItems = $(this).closest('.comment').find('.edit-toggle');
         app.editComment(postIndex, commentIndex, text, function() {
             commentText.text(text);
-            toggleItems.toggle("slow");
+            toggleItems.toggle("fast");
         });
     } else {
         // TODO PUT Validation error and message for the user
@@ -261,7 +277,7 @@ $posts.on('click', '.save-post', function() {
         let toggleItems = $(this).closest('.post').find('.edit-post-toggle');
         app.editPost(postIndex, text, function() {
             postText.text(text);
-            toggleItems.toggle("slow");
+            toggleItems.toggle("fast");
         });
     } else {
         // TODO PUT Validation error and message for the user

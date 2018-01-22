@@ -3,8 +3,18 @@
 
 <head>
     <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="style.css" rel="stylesheet">
     <title></title>
+    <script src="jquery/dist/jquery.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $( function() {
+            $( "#sortable2" ).sortable();
+            $( "#sortable2" ).disableSelection();
+        } );
+    </script>
 </head>
 
 <body>
@@ -14,7 +24,7 @@
                 <div class="page-header">
                     <h1>Spacebook</h1>
                 </div>
-                <div class="posts"></div>
+                <ul id="sortable2" class="posts"></ul>
                 <form class="post-form">
                     <h3>Add a New Post</h3>
                     <div class="form-group">
@@ -26,7 +36,7 @@
         </div>
     </div>
     <script id="post-template" type="text/x-handlebars-template">
-        <div class="post" data-id="{{ _id }}"> <span class="post-text edit-post-toggle">{{text}}</span> <input class="form-control edit-post-input edit-post-toggle" style="display: none" type="text"/>
+        <div class="ui-state-default well post" data-id="{{ _id }}"> <span class="post-text edit-post-toggle">{{text}}</span> <input class="form-control edit-post-input edit-post-toggle" style="display: none" type="text"/>
             <br><a class="toggle-comments" href="#"> Comments </a>
             <button type="button" class="btn btn-sm btn-primary save-post edit-post-toggle" style="display: none">Save</button>
             <button type="button" class="btn btn-sm btn-danger cancel-edit-post edit-post-toggle" style="display: none">Cancel Edit</button>
@@ -39,6 +49,7 @@
                 <button type="button" class="btn btn-sm btn-primary add-comment">Post Comment</button>
             </div>
         </div>
+        </li>
     </script>
     <script id="comment-template" type="text/x-handlebars-template">
         <li class="comment form-inline form-group">
@@ -51,7 +62,6 @@
             <button type="button" class="btn btn-sm btn-danger remove-comment edit-toggle">Remove</button>
         </li>
     </script>
-    <script src="jquery/dist/jquery.js"></script>
     <script src="handlebars/dist/handlebars.js"></script>
     <script src="main.js"></script>
 </body>
